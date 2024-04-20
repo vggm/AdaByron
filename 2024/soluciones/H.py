@@ -12,33 +12,32 @@ def resolve(mady: MAdy, query: Query, precio_combustible: list[int]):
   comb_max, src, dst = query
   
   result = float('inf')
-  # visited = {}
-  visited = set()
+  visited = {}
+  # visited = set()
   stack = []
   heappush(stack, (0, 0, src, -1))
   while stack:
-    c, ng, v, l = heappop(stack)
-    g = -ng
+    c, g, v, l = heappop(stack)
     
-    # if visited.get((v, g)) is not None:
-    #   if visited[(v, g)] < c:
-    #     continue
+    if visited.get((v, g)) is not None:
+      if visited[(v, g)] < c:
+        continue
     
-    # visited[(v, g)] = c
+    visited[(v, g)] = c
     
-    if (v, g) in visited:
-      continue
-    visited.add((v, g))
+    # if (v, g) in visited:
+    #   continue
+    # visited.add((v, g))
     
     if v == dst:
       return c
     
     if g < comb_max:
-      heappush(stack, (c + precio_combustible[v], ng-1, v, l))
+      heappush(stack, (c + precio_combustible[v], g+1, v, l))
     
     for ady, dist in mady[v].items():
       if ady != l and dist <= g:
-        heappush(stack, (c, ng+dist, ady, v))
+        heappush(stack, (c, g-dist, ady, v))
   
   return result
     
