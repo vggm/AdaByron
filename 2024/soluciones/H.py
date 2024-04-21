@@ -1,7 +1,5 @@
 
 # gasolineras
-
-from collections import deque
 from heapq import heappush, heappop
 
 
@@ -59,6 +57,7 @@ if __name__ == '__main__':
       precios.insert(0, 0)
       
       # Cada ciudad es la posicion i-esima del array. Ciudad 1 = mady[1]
+      # La posicion 0 sera siempre un map vacio, las ciudades empiezan en 1
       mady = [{} for _ in range(nodes + 1)]
       
       for _ in range(edges):
