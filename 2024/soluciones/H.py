@@ -1,50 +1,48 @@
 
 # gasolineras
+from collections import defaultdict
 from heapq import heappush, heappop
 
 
 Query = tuple[int, int, int]
 MAdy = list[dict[int, int]]
 
-def resolve(mady: MAdy, query: Query, precio_combustible: list[int]):
-  comb_max, src, dst = query
+def resolve(neighbours: MAdy, query: Query, fuel_cost: list[int]):
+  max_fuel, src, dst = query
   
-  result = float('inf')
-  visited = {}
-  # visited = set()
+  # every state starts with the cost of inf
+  visited = defaultdict(lambda : float('inf'))
   stack = []
-  heappush(stack, (0, 0, src, -1))
+  heappush(stack, (0, 0, src))
   while stack:
-    c, g, v, l = heappop(stack)
+    current_cost, fuel, city = heappop(stack)
     
-    if visited.get((v, g)) is not None:
-      if visited[(v, g)] < c:
-        continue
+    if visited[(city, fuel)] < current_cost:
+      continue
     
-    visited[(v, g)] = c
+    visited[(city, fuel)] = current_cost
     
-    # if (v, g) in visited:
-    #   continue
-    # visited.add((v, g))
+    if city == dst:
+      print(current_cost)
+      return  
     
-    if v == dst:
-      return c
+    if fuel < max_fuel:
+      heappush(stack, (current_cost + fuel_cost[city], fuel+1, city))
     
-    if g < comb_max:
-      heappush(stack, (c + precio_combustible[v], g+1, v, l))
-    
-    for ady, dist in mady[v].items():
-      if ady != l and dist <= g:
-        heappush(stack, (c, g-dist, ady, v))
-  
-  return result
+    for neighbor, distance in neighbours[city].items():
+      if (fuel >= distance  # fuel must be greater or equal than distance 
+        and visited[(neighbor, fuel-distance)] > current_cost):  # the cost of that state is greater than the new one
+        heappush(stack, (current_cost, fuel-distance, neighbor))
+
+  print('IMPOSIBLE')
     
 
 if __name__ == '__main__':
-
+  
   try:
+    
     while True:
-      
+    
       entrada = input()
       if entrada == '':
         break
@@ -68,9 +66,10 @@ if __name__ == '__main__':
       queries = int(input())
       for _ in range(queries):
         query = list(map(int, input().split()))
-        response = resolve(mady, query, precios)
-        print('IMPOSIBLE' if response == float('inf') else response)
-  except EOFError:
-    pass 
+        resolve(mady, query, precios)
+        
+      print('---')
     
+  except EOFError:
+    pass
     
