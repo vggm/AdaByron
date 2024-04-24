@@ -31,13 +31,8 @@ def resolve(neighbours: Neighbours, alt: ALT):
   L_distance = get_distances(neighbours, L)
   T_distance = get_distances(neighbours, T)
   
-  result = float('inf')
-  for node in range(1, total_nodes + 1):
-    s = A_distance[node] + L_distance[node] + T_distance[node]
-    if s < result:
-      result = s
-  
-  return result
+  return min(A_distance[node] + L_distance[node] + T_distance[node]
+             for node in range(1, total_nodes + 1))
 
 
 if __name__ == '__main__':
