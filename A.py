@@ -1,51 +1,55 @@
 
-def counter():
-  n = 0
-  while True:
-    yield n + 1
-
-
-def recursive(in1: list[str], in2: list[str], i: int, j: int, matrix: list[list[int]]):
-  
-  if i < 0 or j < 0:
-    return 0
-  
-  if matrix[i][j] != 0:
-    return matrix[i][j]
-  
-  if in1[i] == in2[j]:
-    matrix[i][j] = recursive(in1, in2, i-1, j-1, matrix) + 1
-    return matrix[i][j]
-  
-  matrix[i][j] = max(recursive(in1, in2, i-1, j, matrix), recursive(in1, in2, i, j-1, matrix))
-  return matrix[i][j]
-  
-
 def resolve(palabras: list[str], entrada: list[str]):
-  result = []
-  N, M = len(palabras), len(entrada)
-  i, j = N-1, M-1
-  
-  matrix = [[0 for _ in range(M)] for _ in range(N)]
-  recursive(palabras, entrada, i, j, matrix)
-  for row in matrix:
-    print(*row)
-  
-  count = matrix[i][j]
-  while count > 0 and (i, j >= 0):
-    cell_value = matrix[i][j]
-    if palabras[i] == entrada[j]:
-      result.append(palabras[i])
-      count -= 1
-      i, j = i-1, j-1
-      continue
-    
-    if j - 1 >= 0 and cell_value == matrix[i][j-1]:
-      j -= 1
+  n, m = len(palabras), len(entrada)
+  dp = [[-1] * (m+1) for _ in range(n+1)]
+  for i in range(n+1):
+    dp[i][0] = 0
+  for j in range(m+1):
+    dp[0][j] = 0
+
+  def rec(i, j):
+
+    if dp[i][j] != -1:
+      return dp[i][j]
+
+    if palabras[i-1] == entrada[j-1]:
+      dp[i][j] = rec(i-1, j-1) + 1
     else:
+      dp[i][j] = max(rec(i-1, j), rec(i, j-1))
+
+    return dp[i][j]
+  rec(n, m)
+
+  ''' Mostrar Matriz '''
+  # col = ['~'] + palabras
+  # for v in [' ', '~'] + entrada:
+  #   print(v[0], end=' ')
+  # print()
+  # for i, row in enumerate(dp):
+  #   print(col[i][0], end=' ')
+  #   for v in row:
+  #     print(v if v != -1 else 'X', end=' ')
+  #   print()
+  # print()
+  ''' - Fin Mostrar Matriz - '''
+
+  res = []
+  i, j = n, m
+  total = dp[n][m]
+  while total:
+    curr = dp[i][j]
+    if dp[i-1][j] != curr and dp[i][j-1] != curr:
+      i, j = i-1, j-1
+      total -= 1
+      res.append(palabras[i])
+
+    elif dp[i-1][j] == curr:
       i -= 1
-  
-  print(*result[::-1]) 
+
+    else:
+      j -= 1
+
+  print(*res[::-1])
 
 
 if __name__ == '__main__':
