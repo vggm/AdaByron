@@ -1,37 +1,35 @@
 
 
+def resolve(pesos: list[int], viajes: int):
 
-def resolve2(nums: list[int], viajes: int):
-    if viajes == len(nums):
-        return max(nums)
-    
-    if viajes == 1:
-        return sum(nums)
+  n = len(pesos)
 
-    
-    
+  def puede_transportar(total: int) -> bool:
+    i, k = 0, 0
+    while i < n:
+      curr = pesos[i]
+      j = i + 1
+      while j < n and curr + pesos[j] <= total:
+        curr += pesos[j]
+        j += 1
+      i = j
+      k += 1
+    return k <= viajes
 
-def resolve(nums: list[int], viajes):
-    
-    if len(nums) == viajes:
-        print(max(nums))
-        return
-    
-    media = sum(nums) // viajes
-    
-    maximo, temp = 0, 0
-    for n in nums:
-        if n >= media:
-            maximo = n
-            continue
-            
-        temp += n
-        if temp >= media:
-            if temp < maximo:
-                maximo = temp
-            temp = 0
-    
-    print(maximo)
+  suma, maximo = 0, 0
+  for peso in pesos:
+    maximo = max(maximo, peso)
+    suma += peso
+
+  l, r = maximo, suma
+  while l <= r:
+    m = (l+r) // 2
+    if puede_transportar(m):
+      r = m - 1
+    else:
+      l = m + 1
+
+  return l
 
 
 if __name__ == '__main__':
