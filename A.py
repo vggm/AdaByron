@@ -21,16 +21,16 @@ def resolve(palabras: list[str], entrada: list[str]):
   rec(n, m)
 
   ''' Mostrar Matriz '''
-  # col = ['~'] + palabras
-  # for v in [' ', '~'] + entrada:
-  #   print(v[0], end=' ')
-  # print()
-  # for i, row in enumerate(dp):
-  #   print(col[i][0], end=' ')
-  #   for v in row:
-  #     print(v if v != -1 else 'X', end=' ')
-  #   print()
-  # print()
+  '''col = ['~'] + palabras
+  for v in [' ', '~'] + entrada:
+    print(v[0], end=' ')
+  print()
+  for i, row in enumerate(dp):
+    print(col[i][0], end=' ')
+    for v in row:
+      print(v if v != -1 else 'X', end=' ')
+    print()
+  print()'''
   ''' - Fin Mostrar Matriz - '''
 
   res = []
